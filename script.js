@@ -140,6 +140,8 @@ menuToggle.onclick = function () {
 
 //^^Function to set up main div before any question is introduced. Based on this function, rest of code will be manipulated
 function setMainDivInMotion() {
+    mainDiv.classList.remove("main-div-for-questions-result")
+    mainDiv.classList.add("main-div-for-questions")
     headerH3.textContent = 'Uputstvo za korištenje';
     mainTextP.textContent = 'Sve što je potrebno je da pritisnete dugme ispod i da pratite upute. Za više informacija o kalkulatoru kao i njegvoj svrhi, kliknite meni u lijevom gornjem čošku. Sretno i uživajte u korištenju';
     optionsDiv.innerHTML = `
@@ -736,7 +738,38 @@ function willNextCheck (inheritance) {
     return new Promise (resolve => {
         headerH3.textContent = 'Podjela testamentom'
         mainTextP.innerHTML = `
-        Ustanovili smo da postoji testament i pretpostavit ćemo da je realan u smislu kome šta ide. Nemoguće je pretpostaviti šta će biti u testamentu ali ćemo pokriti varijacije koje se uglavnom dogode.`
+        Ustanovili smo da postoji testament i pretpostavit ćemo da je punovažan u smislu kome šta ide. Nemoguće je pretpostaviti šta će biti u testamentu ali ćemo pokriti varijacije koje se uglavnom dogode. Ispod označite koliko imovine je podijeljeno testamentom. Otprilike saberite u procentima. Ako je na primjer ostavljena 1/4 prijatelju i 1/4 bračnom partneru, označite 50% i to će biti testamentarni dio`
+
+        optionsDiv.innerHTML = `
+        <div class="forms">
+        <form id="form" class="radio-form">
+        <div class="forms-text">
+        <input type="range" id="slider" min="0" max="100" value="50" step="1">
+        <span id="rangetext" for="slider"></span>
+        <br>
+        <label for="slider">Testamentarni dio</label>
+        <br>
+        </div>
+        <div class="forms-input">
+        <input type="submit" value="Dalje" class="input-submit">
+        </div>
+        </form>
+        </div>`
+
+        const form = document.querySelector('#form');
+        const slider = document.querySelector('#slider');
+        const rangeText = document.querySelector('#rangetext');
+        
+        slider.addEventListener('input', () => {
+            const slideValue = parseInt(slider.value);
+            rangeText.textContent = `${slideValue}%`;
+          });
+
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            const slideValue = parseInt(slider.value);
+            rangeText.textContent = `${slideValue}%`;
+          });
     })
 }
 
