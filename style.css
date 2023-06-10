@@ -1,6 +1,6 @@
 * {
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif
+    font-family: 'Times New Roman', Times, serif;
 }
 
 body {
@@ -242,12 +242,12 @@ main {
     border: none;
     width: 30px;
     height: 100px;
-    border-radius: 0 0 5px 0;
+    border-radius: 5px 0 0 5px;
     position: relative;
     bottom: 40px;
     font-size: xx-large;
-    right: 286px;
-    top: 0px
+    right: 315px;
+    top: 20px
 }
 
 #header-for-text {
@@ -440,43 +440,6 @@ footer {
     color: #fff;
 }
 
-#slider {
-    width: 300px;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: rgb(209, 208, 208);
-    border-radius: 5px;
-    outline: none;
-    opacity: 0.8;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-    height: 10px;
-}
-
-#slider:hover {
-    opacity: 1;
-    cursor: pointer;
-}
-
-#slider::-webkit-slider-thumb {
-   -webkit-appearance: none;
-   appearance: none;
-   width: 20px;
-   height: 20px;
-   background-color: darkslategray; 
-   border-radius: 50%;
-}
-
-#screen::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background-color: darkslategray;
-}
-
-#rangetext {
-    margin-left: 10px;
-    color: rgb(12, 24, 24);
-}
 
 
 @media only screen and (max-width: 600px) {
@@ -807,7 +770,6 @@ footer {
         width: 50px;
     }
 
-
     .result-neutral {
         font-weight: bolder;
         color: blue;
@@ -909,43 +871,5 @@ footer {
     .tooltipsign {
         background-color: palevioletred;
         color: #fff;
-    }
-
-    #slider {
-        width: 220px;
-        -webkit-appearance: none;
-        appearance: none;
-        background-color: rgb(209, 208, 208);
-        border-radius: 5px;
-        outline: none;
-        opacity: 0.8;
-        -webkit-transition: .2s;
-        transition: opacity .2s;
-        height: 10px;
-    }
-    
-    #slider:hover {
-        opacity: 1;
-        cursor: pointer;
-    }
-    
-    #slider::-webkit-slider-thumb {
-       -webkit-appearance: none;
-       appearance: none;
-       width: 20px;
-       height: 20px;
-       background-color: darkslategray; 
-       border-radius: 50%;
-    }
-    
-    #screen::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
-        background-color: darkslategray;
-    }
-    
-    #rangetext {
-        margin-left: 10px;
-        color: rgb(12, 24, 24);
     }
 }

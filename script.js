@@ -14,7 +14,6 @@ const [
         document.querySelector("#third-li"),
         document.querySelector("#description-for-li"),
         document.querySelector("#nav-menu"),
-        document.querySelector("#start-calculator"),
         document.querySelector('#stop-calculator'),
         ...document.querySelectorAll(".hamburger-menu div")
     ];
@@ -44,9 +43,10 @@ let inheritance = 100 //todo base inheritance
 let jumpToFourthDegree = false //todo skip to fourth stage
 let jumpToFourthDegree2 = false //todo another check
 let jumpToThirdDegree = false //todo check for third jump
-let willStatus = false; //todo check for will status
 previousBtn.textContent = '↲'
-previousBtn.addEventListener("click", setMainDivInMotion)
+previousBtn.addEventListener("click", function() {
+    location.reload();
+  });
 
 //^^Setting up attributes and appendings
 mainDiv.classList.add("main-div-for-questions");
@@ -89,6 +89,17 @@ let indecencyText = '1) ko je s umišljajem lišio ili pokušao lišiti života 
 
 let extramaritalUnionText = 'Vanbračna zajednica, u smislu ovog Zakona, jeste zajednica života žene i muškarca koji nisu u braku ili vanbračnoj zajednici sa drugom osobom, koja traje najmanje tri godine ili kraće ako je u njoj rođeno zajedničko dijete.'; //todo Text to be used as a tooltip in functions
 
+let crossingWithWill = `
+Ostavitelj može isključiti iz nasljedstva nasljednika koji ima pravo na nužni dio<hr>
+1) ako se on povredom neke zakonske ili moralne obaveze koja proizlazi iz njegovog porodičnog odnosa s ostaviteljem teže ogriješio prema ostavitelju,
+<br>
+2) ako je namjerno počinio neko teže krivično djelo prema njemu ili njegovom bračnom partneru, djetetu ili roditelju,
+<br>
+3) ako je počinio neko od krivičnih djela protiv integriteta Bosne i Hercegovine ili čovječnosti i vrijednosti zaštićenih međunarodnim pravom,
+<br>
+4) ako se odao neradu ili nepoštenu životu.
+<br>
+(2) Isključenje iz nasljedstva može biti potpuno ili djelomično.`; //todo Text to be used as a tooltip in functions
 
 // ^^Function to expand texts on my UL LI elements. 
 function createTextForListings() {
@@ -112,7 +123,7 @@ function createTextForListings() {
                         break;
                     case listingThree:
                         descriptionForListings.style.display = "block"
-                        descriptionForListings.innerHTML = "Ovdje tek treba da bude postavljena forma"
+                        descriptionForListings.innerHTML = "Ovaj kalkulator služi da vas spasi od troškova plaćanja advokatima za stvari koje se ne mogu promjeniti jer su zakonski određene. U slučaju da nema testamenta ili ugovora o nasljeđivanju, ovaj kalkulator će vam izračunati kako se dijeli imovina i možete slobodno preskočiti plačanje advokata jer ne može ništa poduzeti osim da vam uzme novac, živce i vrijeme za slučaj koji ne možete dobiti"
                         break;
                 }
             }
@@ -143,14 +154,16 @@ function setMainDivInMotion() {
     mainDiv.classList.remove("main-div-for-questions-result")
     mainDiv.classList.add("main-div-for-questions")
     headerH3.textContent = 'Uputstvo za korištenje';
-    mainTextP.textContent = 'Sve što je potrebno je da pritisnete dugme ispod i da pratite upute. Za više informacija o kalkulatoru kao i njegvoj svrhi, kliknite meni u lijevom gornjem čošku. Sretno i uživajte u korištenju';
+    mainTextP.innerHTML = `
+    Pritisnete dugme na kojem piše "Započnite" i pratite upute. U slučaju da želite da se vratite na početak i isprobate neku drugu opciju, imate crveno dugme sa lijeve strane. Bit će ponuđete tri opcije u vidu ugovora, testamenta ili zakonske podjele imovine. Fokus kalkulatora je na zakonskoj podjeli ali imate ukratko i objašnjenja u slučaju da postoji testament ili ugovor.`;
+
     optionsDiv.innerHTML = `
     <div class="forms">
     <form id="form" class="radio-form">
     <div class="forms-text">
     </div>
     <div class="forms-input">
-    <input type="submit" value="Nastavite" class="input-submit">
+    <input type="submit" value="Započnite" class="input-submit">
     </div>
     </form>
     </div>`
@@ -165,22 +178,25 @@ setMainDivInMotion()
 
 //^^Function to set first question
 function setFirstQuestion() {
-    headerH3.textContent = 'Prvo pitanje'
-    mainTextP.textContent = 'Da li postoji validan testament ili ugovor o nasljeđivanju?'
+    headerH3.textContent = 'Odaberite jedno'
+    mainTextP.textContent = 'Izaberite zakonsko nasljeđivanje ili informacije o testamentu i ugovorima'
 
     optionsDiv.innerHTML =
     `
     <div class="forms">
     <form id="questionForm" class="radio-form">
     <div class="forms-text">
+    <input type="radio" id="nuzni" name="pitanje-1" value="nuzni">
+    <label for="nuzni">Info o nužnom dijelu</label>
+    <br>
     <input type="radio" id="ugovor" name="pitanje-1" value="ugovor">
-    <label for="ugovor">Ugovor o nasljeđivanju</label>
+    <label for="ugovor">Info o ugovorima</label>
     <br>
     <input type="radio" id="testament" name="pitanje-1" value="testament">
-    <label for="testament">Testament</label>
+    <label for="testament">Info o testamentima</label>
     <br>
     <input type="radio" id="prazno" name="pitanje-1" value="prazno">
-    <label for="prazno">Ništa od navedenog</label>
+    <label for="prazno"><span class="result-neutral">Zakonsko nasljeđivanje</span></label>
     </div>
     <div class="forms-input">
     <input type="submit" value="Dalje" class="input-submit">
@@ -196,6 +212,9 @@ function setFirstQuestion() {
         const selectedValue = document.querySelector('input[name="pitanje-1"]:checked').value;
 
         switch (selectedValue) {
+            case 'nuzni':
+                nextFunctionForForcedShare();
+                break;
             case 'ugovor':
                 nextFunctionForContract();
                 break;
@@ -209,546 +228,17 @@ function setFirstQuestion() {
     })
 }
 
-//^^ Function to check for will
-function nextFunctionForWill (inheritance) {
+//^^ Function to explain forced share
+function nextFunctionForForcedShare() {
     return new Promise (resolve => {
-        headerH3.textContent = 'Testament';
-
+        headerH3.textContent = 'Nužni dio';
         mainTextP.innerHTML = `
-        Da li je osoba koja je napisala testament imala navršenih 15 godina i da li je bila sposobna za rasuđivanje da zna šta radi`
-
-        optionsDiv.innerHTML = radioForm('test')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="test"]:checked').value;
-
-            if (selectedValue === 'ne') {
-                resolve(
-                    skipTest()
-                )
-            } else {
-                resolve(
-                    willQuestionPartTwo(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Function to check for will fraudness
-function willQuestionPartTwo (inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Testament';
-
-        mainTextP.innerHTML = `
-        Da li je kompletan testament napisan pod prinudom, prijetnjom ili prevarom. U slučaju da je samo jedan dio, ta odredba će biti ništavna ali taj dio se najbolje određuje na sudu. Mi ovdje okvirno gledamo situaciju`
-
-        optionsDiv.innerHTML = radioForm('fraud')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="fraud"]:checked').value;
-
-            if (selectedValue === 'da') {
-                resolve(
-                    skipTest()
-                )
-            } else {
-                resolve(
-                    willQuestionPartSpecial(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Special rules for will lawfulness
-function willQuestionPartSpecial (inheritance) {
-    headerH3.textContent = 'Testament'
-    mainTextP.innerHTML = `
-    Prije nego provjerimo punovažnost testamenta, zapamtite da ako su potrebni svjedoci, moraju biti punoljetni, znati čitati i pisati, razumiti jezik na kojem je testament sastavljen i da nisu lišeni poslovne sposobnosti${tooltip('Sposobnost da se zaključuju pravni poslovi poput ugovora, radi, privređuje i sve ostalo što lice koje je punoljetno može da radi. To je sve što trebate znati. Moguće je da se oduzme i da lice nema poslovnu sposobnost,zbog toga se uslov ovdje nalazi')}<br>
-    Također svjedoci <span class="result-negative">ne mogu</span> biti ostaviteljevi potomci, usvojenici i njihovi potomci, njegovi preci i usvojitelji, njegovi srodnici u pobočnoj liniji do četvrtog stepena zaključno kao ni bračni partneri svih ovih osoba i ostaviteljev pračni partner. <span class="result-neutral">Ukratko članovi porodice</span><br>
-    
-    Ako znate da svjedoci nisu validni, kliknite "Ne", kao da testament nikad nije ni postojao. To se kasnije obara na sudu`
-    optionsDiv.innerHTML = `
-    <div class="forms">
-    <form id="form" class="radio-form">
-    <div class="forms-text">
-    </div>
-    <div class="forms-input">
-    <input type="submit" value="Dalje" class="input-submit">
-    </div>
-    </form>
-    </div>`
-
-    const form = document.querySelector('#form')
-    form.addEventListener('submit', event => {
-        event.preventDefault();
-
-        willQuestionPartThree (inheritance)
-    })
-}
-
-//^^ Will check number 3
-function willQuestionPartThree (inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li je zavještatelj testament napisao i potpisao svojom rukom<br>
-        <span class="result-neutral">Zavještatelj je osoba koja je napravila testament</span>`
-
-        optionsDiv.innerHTML = radioForm('handWritten')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="handWritten"]:checked').value;
-
-            if (selectedValue === 'ne') {
-                resolve(
-                    willQuestionPartFour(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 4
-function willQuestionPartFour(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li je neko drugi sastavio testament a zavještatelj ga u prisustvu 2 svjedoka potpisao i izjavio da je njegov testament? I svjedoci moraju biti potpisani`
-
-        optionsDiv.innerHTML = radioForm('witness')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="witness"]:checked').value;
-
-            if (selectedValue === 'ne') {
-                resolve(
-                    willQuestionPartFive(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 5
-function willQuestionPartFive(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li je testament sastavljen po zavještateljevom kazivanju od strane sudije nadležnog suda? Obojica moraju biti potpisani`
-
-        optionsDiv.innerHTML = radioForm('judge')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="judge"]:checked').value;
-
-            if (selectedValue === 'ne') {
-                resolve(
-                    willQuestionPartSix(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 6
-function willQuestionPartSix(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Ako zavještatelj nije u stanju da pročita testament koji mu je sastavio sudija, sudija će ga pročitati u prisustvu dva svjedoka. Da li se zavještatelj složio sa testamentom i potpisao se potpisom ili otiskom prsta zajedno sa svjedocima i sudijom?`
-
-        optionsDiv.innerHTML = radioForm('judgeAndWitness')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="judgeAndWitness"]:checked').value;
-
-            if (selectedValue === 'ne') {
-                resolve(
-                    willQuestionPartSeven(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 7
-function willQuestionPartSeven(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li je testament sastavljen od strane notara u formi notarski obrađene isprave?`
-
-        optionsDiv.innerHTML = radioForm('notar')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="notar"]:checked').value;
-
-            if (selectedValue === 'ne') {
-                resolve(
-                    willQuestionPartEight(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 8
-function willQuestionPartEight(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li je testament sastavljen na bosanskohercegovačkom brodu ili avionu od strane zapovjednika broda odnosno aviona po istim odredbama koje smo već prošli. Zapovjednik je u ovom slučaju sudija i potrebni su svjedoci. Ovaj testament prestaje važiti po isteku 30 dana nakon povratka zavještatelja u Bosnu i Hercegovinu.<br> Ako je testament istekao ili nije po pravilima, idete na opciju "Ne"`
-
-        optionsDiv.innerHTML = radioForm('captain')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="captain"]:checked').value;
-
-            if (selectedValue === 'ne') {
-                resolve(
-                    willQuestionPartNine(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 9
-function willQuestionPartNine(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Za vrijeme mobilizacije ili rata može po odredbama koje važe za sačinjavanje sudskog testamenta, sačiniti testament osobi na vojnoj dužnosti zapovjednik čete ili drugi starješina njegovog ili višeg ranga, ili koja druga osoba u prisustvu koje od ovih starješina, kao i svaki starješina odvojenog odjeljenja.
-        <br>
-        Ovako sačinjen testament prestaje važiti po isteku 60 dana po završetku rata, a ako je zavještatelj ranije ili kasnije demobiliziran po isteku 30 dana od demobiliziranja.
-        <br>
-        Ako je testament istekao ili nije po pravilima, idete na opciju "Ne"`
-
-        optionsDiv.innerHTML = radioForm('war')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="war"]:checked').value;
-
-            if (selectedValue === 'ne') {
-                resolve(
-                    willQuestionPartTen(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 10
-function willQuestionPartTen(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li je testament usmeni?
-        
-        `
-
-        optionsDiv.innerHTML = radioForm('mouthwill')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="mouthwill"]:checked').value;
-
-            if (selectedValue === 'da') {
-                resolve(
-                    willQuestionPartEleven(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextInternational(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 11
-function willQuestionPartEleven(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Zavještatelj može izjaviti svoju posljednju volju usmeno pred dva svjedoka(uslove smo naveli na početku, samo što ovdje ne moraju znati čitati i pisati) samo ako uslijed izuzetnih prilika nije u mogućnosti da sačini pismeni testament. <span class="result-neutral">Uglavnom se radi o situacijama poput požara, poplava, nesreća i slično. Samo u njima će usmeni testament biti važeći, drugačije neće.</span>
-        <br>
-        Usmeni testament prestaje da važi po isteku 30 dana od prestanka izuzetnih prilika u kojima je sačinjen.
-        <br>
-        Ako se ispunjavaju uslovi za testament, kliknite na "Da", u suprotnom idete na "Ne".
-        `
-
-        optionsDiv.innerHTML = radioForm('mouthwillcheck')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="mouthwillcheck"]:checked').value;
-
-            if (selectedValue === 'da') {
-                resolve(
-                    willQuestionPartTwelve(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextInternational(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check number 12
-function willQuestionPartTwelve(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li je usmenim testamentom nešto ostavljeno svjedocima ili porodici svjedoka?. Ako jeste, usmeni testament je nevažeći
-        `
-
-        optionsDiv.innerHTML = radioForm('mouthwillcheck')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="mouthwillcheck"]:checked').value;
-
-            if (selectedValue === 'da') {
-                resolve(
-                    willNextInternational(inheritance)
-                )
-            } else {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check for international contract
-function willNextInternational(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li je sačinjen međunarodni testament?
-        `
-
-        optionsDiv.innerHTML = radioForm('international')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="international"]:checked').value;
-
-            if (selectedValue === 'da') {
-                resolve(
-                    willNextInternationalTwo(inheritance)
-                )
-            } else {
-                resolve(
-                    skipTest()
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check for international contract
-function willNextInternationalTwo(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        <div class="multiple-form">
-        Pravila međunarodnog testamenta su sljedeća:<br>
-        Međunarodni testament mora biti sačinjen u pismenoj formi.<br>
-        Zavještatelj ne mora svojeručno napisati međunarodni testament.<br>
-        Međunarodni testament može biti napisan na bilo kojem jeziku, rukom ili na neki drugi način.<br>
-        U prisustvu dva svjedoka i osobe ovlaštene za međunarodni testament, zavještatelj izjavljuje da je pismeno njegov testament i da je upoznat sa njegovim sadržajem.<br>
-        Zavještatelj nije dužan da sa sadržajem međunarodnog testamenta upozna svjedoka niti ovlaštenu osobu.</div>
-        <br>
-        Da li su ispunjeni svi uslovi?
-        `
-
-        optionsDiv.innerHTML = radioForm('internationalcheck')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="internationalcheck"]:checked').value;
-
-            if (selectedValue === 'da') {
-                resolve(
-                    willNextInternationalThree(inheritance)
-                )
-            } else {
-                resolve(
-                    skipTest()
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check for international contract part three
-function willNextInternationalThree(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Da li su svi prisutni potpisani na kraju međunarodnog testamenta? Ako zavještatelj nije u stanju da se potpiše, saopćit će razlog ovlaštenoj osobi koja će to zabilježiti.<br>
-        Također je bitno da li postoji datum pod kojim je testament potpisala ovlaštena osoba i da je stavljen na kraj.<br>
-        Ako su oba uslova ispunjena, kliknite "Da"
-        `
-
-        optionsDiv.innerHTML = radioForm('internationalcheck')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="internationalcheck"]:checked').value;
-
-            if (selectedValue === 'da') {
-                resolve(
-                    willNextInternationalFour(inheritance)
-                )
-            } else {
-                resolve(
-                    skipTest()
-                )
-            }
-        })
-    })
-}
-
-//^^ Will check for international contract part four
-function willNextInternationalFour(inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Punovažnost testamenta';
-
-        mainTextP.innerHTML = `
-        Ovlaštena osoba za postupanje pri sastavljanju međunarodnog testamenta, u smislu ovog zakona, jeste sudija općinskog suda, konzularni predstavnik ili diplomatski predstavnik Bosne i Hercegovine koji obavlja konzularne poslove, notar i zapovjednik bosanskohercegovačkog broda, odnosno aviona.<br>
-
-        Zavještatelj može međunarodni testament ostaviti na čuvanje kod općinskog suda ili notara.<br>
-
-        Pri sačinjavanju međunarodnog testamenta svjedoci će biti punoljetne osobe koje nisu lišene poslovne sposobnosti i koje razumiju jezik na kojem je zavještatelj izjavio da je pismeno njegov testament i da je upoznat sa njegovim sadržajem. Ne mogu biti svjedoci članovi porodice.<br>
-
-        Da li se ispunjavaju svi uslovi?
-        `
-
-        optionsDiv.innerHTML = radioForm('internationalcheck')
-
-        const form = document.querySelector('#form');
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const selectedValue = document.querySelector('input[name="internationalcheck"]:checked').value;
-
-            if (selectedValue === 'da') {
-                resolve(
-                    willNextCheck(inheritance)
-                )
-            } else {
-                resolve(
-                    skipTest()
-                )
-            }
-        })
-    })
-}
-
-//^^ Function for will Check
-function willNextCheck (inheritance) {
-    return new Promise (resolve => {
-        headerH3.textContent = 'Podjela testamentom'
-        mainTextP.innerHTML = `
-        Ustanovili smo da postoji testament i pretpostavit ćemo da je punovažan u smislu kome šta ide. Nemoguće je pretpostaviti šta će biti u testamentu ali ćemo pokriti varijacije koje se uglavnom dogode. Ispod označite koliko imovine je podijeljeno testamentom. Otprilike saberite u procentima. Ako je na primjer ostavljena 1/4 prijatelju i 1/4 bračnom partneru, označite 50% i to će biti testamentarni dio`
+        Nužni nasljednici su oni koji su trebali zakonom da naslijede ali nemaju tu mogućnost zbog ugovora/testamenta ili raspoloživi dio ostavine nije dovoljno velik. Suštinski samo treba da pratite kalkulator i obratite pažnju na sljedeće. Bračni/vanbračni partner, djeca i potpuni usvojenik${tooltip('Usvojeno dijete koje ima jednaka prava kao biološko')} dobijaju pola od onoga što bi inače dobili. Na primjer ako je bračni/vanbračni partner trebao da dobije 1/3, onda će dobiti 1/6. Odradite kalkulator i upolovite. Ako se imovina po kalkulatoru dijeli na roditelje, braću i sestre ili postoji nepotpuni usvojenik${tooltip('Nema ista prava kao biološka djeca')}, oni dobijaju 3x manje nego što bi inače dobili. Dakle njihov dio dijelite sa tri pod uslovom da nemaju nužnih sredstava za život i da su nesposobni za rad. Ako ne ispunjavaju ta dva uslova, nisu nužni nasljednici`
 
         optionsDiv.innerHTML = `
         <div class="forms">
         <form id="form" class="radio-form">
         <div class="forms-text">
-        <input type="range" id="slider" min="0" max="100" value="50" step="1">
-        <span id="rangetext" for="slider"></span>
-        <br>
-        <label for="slider">Testamentarni dio</label>
-        <br>
         </div>
         <div class="forms-input">
         <input type="submit" value="Dalje" class="input-submit">
@@ -756,44 +246,97 @@ function willNextCheck (inheritance) {
         </form>
         </div>`
 
-        const form = document.querySelector('#form');
-        const slider = document.querySelector('#slider');
-        const rangeText = document.querySelector('#rangetext');
-        
-        slider.addEventListener('input', () => {
-            const slideValue = parseInt(slider.value);
-            rangeText.textContent = `${slideValue}%`;
-          });
-
+        const form = document.querySelector('form');
         form.addEventListener('submit', event => {
             event.preventDefault();
-            const slideValue = parseInt(slider.value);
-            rangeText.textContent = `${slideValue}%`;
-          });
+            resolve(
+                setFirstQuestion()
+            )
+        })
     })
 }
 
-//^^ Function to skip will
-function skipTest () {
-    headerH3.textContent = 'Testament'
-    mainTextP.innerHTML = `
-    Testament se odbija i vraćamo se na početak. Odaberite ili 'ništa od toga' kao zakonsko nasljeđivanje ili 'ugovor o nasljeđivanju' ako je postojao`
-    optionsDiv.innerHTML = `
-    <div class="forms">
-    <form id="form" class="radio-form">
-    <div class="forms-text">
-    </div>
-    <div class="forms-input">
-    <input type="submit" value="Dalje" class="input-submit">
-    </div>
-    </form>
-    </div>`
+//^^ Function to explain contracts
+function nextFunctionForContract () {
+    return new Promise (resolve => {
+        headerH3.textContent = 'Ugovori';
+        mainTextP.innerHTML = `
+        Ugovor o nasljeđivanju mogu potpisati bračni/vanbračni partneri. Ugovor je ništavan(nevažeći) ako se s njim imovina ili njen dio ostavljaju saugovaraču ili trećoj osobi. Dakle bitno je da su u pitanju bračni/vanbračni partneri. Ugovor ima prednost ispred testamenta i zakonskog nasljeđivanja.U slučaju prestanka braka prestaje i ovaj ugovor. Preporučujemo advokata da se provjeri punovažnost ovog ugovora. Bez obzira na njegovo postojanje, i ovdje postoji nužni dio. Pogledati info o nužnom dijelu za više informacija.`
 
-    const form = document.querySelector('#form')
-    form.addEventListener('submit', event => {
-        event.preventDefault();
+        optionsDiv.innerHTML = `
+        <div class="forms">
+        <form id="form" class="radio-form">
+        <div class="forms-text">
+        </div>
+        <div class="forms-input">
+        <input type="submit" value="Dalje" class="input-submit">
+        </div>
+        </form>
+        </div>`
 
-        setFirstQuestion()
+        const form = document.querySelector('form');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            resolve(
+                contractPartTwo()
+            )
+        })
+    })
+}
+
+//^^ Function for contract part two
+function contractPartTwo () {
+    return new Promise (resolve => {
+        headerH3.textContent = 'Ugovori';
+        mainTextP.innerHTML = `
+        Ugovorom se može raspodjeliti imovina i djeci i drugim potomcima pod uslovom da su se s tim saglasila sva djeca i potomci koji bi po zakoni bili pozvani da naslijede. U suštini je ovo najčistija i najbolja forma ako se svi odmah slože kome šta ide nakon smrti ostavitelja.`
+
+        optionsDiv.innerHTML = `
+        <div class="forms">
+        <form id="form" class="radio-form">
+        <div class="forms-text">
+        </div>
+        <div class="forms-input">
+        <input type="submit" value="Dalje" class="input-submit">
+        </div>
+        </form>
+        </div>`
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            resolve(
+                contractPartThree()
+            )
+        })
+    })
+}
+
+//^^ Function for contracts part three
+function contractPartThree() {
+    return new Promise (resolve => {
+        headerH3.textContent = 'Ugovori';
+        mainTextP.innerHTML = `
+        Ugovor o doživotnom izdržavanju govori o tome da jedna osoba izdržava drugu i brine o njoj do kraja njenog života a za uzvrat dobija imovinu tokom života ili nakon smrti. Preporučujemo advokata da provjeri oborivost ovog ugovora ali u 90% situacija isljučuje nužne nasljednike i neoboriv je na sudu. Sada se vraćamo na početni slajd gdje možete provjeriti dodatni info ili pokrenuti kalkulator`
+
+        optionsDiv.innerHTML = `
+        <div class="forms">
+        <form id="form" class="radio-form">
+        <div class="forms-text">
+        </div>
+        <div class="forms-input">
+        <input type="submit" value="Dalje" class="input-submit">
+        </div>
+        </form>
+        </div>`
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            resolve(
+                setFirstQuestion()
+            )
+        })
     })
 }
 
@@ -820,13 +363,9 @@ function childrenCheck() {
             event.preventDefault();
             const numberInput = document.querySelector("#number")
             const inputValue = parseInt(numberInput.value);
-
-            if (inputValue < 0) {
-                reject('Molimo unesite validan broj');
-                return;
-            } else {
-                resolve(inputValue)
-            }
+            
+            resolve(inputValue)
+            
         })
     });
 }
@@ -847,24 +386,109 @@ function spouseCheck() {
     });
 }
 
+//^^ function to explain will testament
+function nextFunctionForWill() {
+    return new Promise (resolve => {
+        headerH3.textContent = 'Testament';
+        mainTextP.innerHTML = `
+        U slučaju da postoji testament, preporučujemo da se provjeri njegova punovažnost na sudu. Neko laičko pravilo je da ako je testament napisao i potpisao svojom rukom ostavitelj ili je testament urađen od strane notara / suda sa svim potpisima i svjedocima, uglavnom je punovažan. Ako postoji usmeni testament uglavnom je nevažeči jer su potrebni uslovi poput požara, poplava, sudara i situacija u kojima ostavitelj nije imao mogućnost da ga drugačije sastavi`
+
+        optionsDiv.innerHTML = `
+        <div class="forms">
+        <form id="form" class="radio-form">
+        <div class="forms-text">
+        </div>
+        <div class="forms-input">
+        <input type="submit" value="Dalje" class="input-submit">
+        </div>
+        </form>
+        </div>`
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            resolve(
+                willPartTwo()
+            )
+        })
+    })
+}
+
+//^^ Function for will part two
+function willPartTwo () {
+    return new Promise (resolve => {
+        headerH3.textContent = 'Testament'
+        mainTextP.innerHTML = `
+        U slučaju da je testament punovažan, uglavnom se sa njim isključuje neko od nasljednika i ostavlja imovina ostalima. Ako se ne isključe potencijalni nasljednici koji bi po zakonu dobili svoj dio a ne mogu zbog testamenta, oni postaju nužni nasljednici. Za više informacija o nužnim nasljednicima pogledati info o njima. Druga opcija je da je sva imovina raspodjeljena jednako tako da niko od nasljednika nije oštećen. I treća je da se sa testamentom nalaže da se nešto uradi, isplate legati, pokloni itd itd. Uglavnom testamenti završavaju sa tužbama za nužni dio.`
+
+        optionsDiv.innerHTML = `
+        <div class="forms">
+        <form id="form" class="radio-form">
+        <div class="forms-text">
+        </div>
+        <div class="forms-input">
+        <input type="submit" value="Dalje" class="input-submit">
+        </div>
+        </form>
+        </div>`
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            resolve(
+                willPartThree()
+            )
+        })
+    })
+}
+
+//^^ Function for will part three
+function willPartThree () {
+    return new Promise (resolve => {
+        headerH3.textContent = 'Testament';
+        mainTextP.innerHTML = `
+        U svakom slučaju postoji previše varijacija sa testamentom tako da je preporuka advokat. Tražite slobodno da se prvo utvrdi punovažnost testamenta i budite svjesni da ako neko nije isključen testamentom, ima pravo na nužni dio. Jedino nemaju pravo djedovi i bake i stariji nasljednici. Preko kalkulatora možete dobiti informacije koliko ko dobija imovine i tako izračunati i nužni dio sa informacijama koje imate u info. Nemojte dopustiti da vas zavlače godinama na sudu. Sada se vračamo na početak gdje možete provjeriti informacije ili ići na direktno računanje`
+
+        optionsDiv.innerHTML = `
+        <div class="forms">
+        <form id="form" class="radio-form">
+        <div class="forms-text">
+        </div>
+        <div class="forms-input">
+        <input type="submit" value="Dalje" class="input-submit">
+        </div>
+        </form>
+        </div>`
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            resolve(
+                setFirstQuestion()
+            )
+        })
+    })
+}
 
 //^^ Function for succession by law
 function nextFunctionForSuccessionLaw () {
     lawSuccessionText('Prvi');
     childrenCheck()
         .then(numberOfKids => {
-            if (numberOfKids > 0) {
-                firstDegreeRelatives(numberOfKids)
-            } else {
-                secondDegreeRelatives()
-            }
+                if (numberOfKids > 0) {
+                    firstDegreeRelatives(numberOfKids)
+                } else {
+                    secondDegreeRelatives()
+                }
         })
+
 }
 
 //^^ Function for succession by law. First degree relatives are mainly composed on children in BA law.
 function firstDegreeRelatives(numberOfKids) {
     return new Promise(resolve => {
       lawSuccessionText('Prvi');
+      
       mainTextP.innerHTML = `
         <div class="multiple-form">
           Koliko djece ima neki od sljedećih faktora<br>
@@ -872,7 +496,9 @@ function firstDegreeRelatives(numberOfKids) {
           2. Nedostojni su<br>
           3. Isključeni su iz nasljedstva<br>
           4. Odrekli su se nasljedstva <span class="result-neutral">u svoje ime</span>
-        </div>`;
+        </div>
+        <br>
+        Kad je podjela imovine u pitanju, isto je da li je potencijalni nasljednik umro ili je nedostojan. Smatra se mrtvim${tooltip('Termin za ovo je fiktivna smrt')} Također je zajedničko što u svim ovim faktorima, djeca od ovih lica nasljeđuju njihov dio`;
   
       let selectOptions = '';
       for (let i = 0; i <= numberOfKids; i++) {
@@ -918,55 +544,46 @@ function grandKidsCheck (numberOfKids, unavailableChildren) {
     return new Promise (resolve => {
         lawSuccessionText('Prvi');
         mainTextP.innerHTML = `
-        Koliko prethodno odabrane djece (umrli, nedostojni, isključeni ili odrekli se u vlastito ime) ima svoju djecu (ostaviteljevi unuci / unuke)`;
+        Koliko prethodno odabrane djece (umrli, nedostojni, isključeni ili odrekli se u vlastito ime) ima svoju djecu koja mogu naslijediti za njih (ostaviteljevi unuci / unuke)`;
 
-        let inputOptions = '';
-        for (let i = 1; i <= unavailableChildren; i++) {
-            inputOptions += `
-            <input type="number" id="input${i}" class="input-size" value="0" min="0" name="grandkids">
-            <label for="input${i}">Djeca od ${i} djeteta</label><br>`
+        let selectOptions = '';
+        for (let i = 0; i <= unavailableChildren; i++) {
+          selectOptions += `<option value="${i}">${i}</option>`;
         }
-
+    
         optionsDiv.innerHTML = `
-        <div class="forms">
-        <form id="form" class="radio-form">
-        <div class="forms-text">
-        ${inputOptions}
-        </div>
-        <div class="forms-input">
-        <input type="submit" value="Dalje" class="input-submit">
-        </div>
-        </form>
-        </div>`
+          <div class="forms">
+            <form id="form" class="radio-form">
+              <div class="forms-text">
+                <select id="unavailable" name="unavailableKids" class="input-size">
+                  ${selectOptions}
+                </select>
+                <label for="unavailable">Ovdje odaberite broj</label><br>
+              </div>
+              <div class="forms-input">
+                <input type="submit" value="Dalje" class="input-submit">
+              </div>
+            </form>
+          </div>`;
 
         const form = document.querySelector('#form');
         form.addEventListener('submit', event => {
             event.preventDefault();
 
-            let unavailableKidsArray = [];
+            const zeroGrandkids = parseInt(document.querySelector('#unavailable').value)
 
-            for (let i = 1; i <= unavailableChildren; i++) {
-                const inputField = document.querySelector(`#input${i}`)
-                const kid = `kid${i}`;
-                const value = parseInt(inputField.value)
-
-                unavailableKidsArray.push({[kid]: i, value: value})
-            };
-
-            let zeroGrandkids = unavailableKidsArray.every(obj => obj.value === 0);
-
-            if (zeroGrandkids && (unavailableChildren != numberOfKids)) {
+            if (zeroGrandkids === 0 && (unavailableChildren != numberOfKids)) {
                 resolve(
                     spouseCheckWithUnaKids(numberOfKids, unavailableChildren)
                 )
-            } else if (zeroGrandkids && (unavailableChildren = numberOfKids)) {
+            } else if (zeroGrandkids === 0 && (unavailableChildren = numberOfKids)) {
                 resolve(
                     secondDegreeRelatives(inheritance)
                 )
             }
             else {
                 resolve(
-                    spouseCheckWithUnaKidsAndGrandkids(numberOfKids, unavailableChildren, unavailableKidsArray)
+                    spouseCheckWithUnaKidsAndGrandkids(numberOfKids, unavailableChildren, zeroGrandkids)
                 )
             }
 
@@ -975,42 +592,33 @@ function grandKidsCheck (numberOfKids, unavailableChildren) {
 }
 
 //^^ Check for spouse if there are unavailable kids with grandkids
-function spouseCheckWithUnaKidsAndGrandkids(numberOfKids, unavailableChildren, unavailableKidsArray) {
+function spouseCheckWithUnaKidsAndGrandkids(numberOfKids, unavailableChildren, zeroGrandkids) {
     return new Promise (resolve => {
         lawSuccessionText('Prvi');
         spouseCheck()
             .then(isSpousePresent => {
                 resolve(
-                    firstDegreeResultsWithUnaAndGrandkids(numberOfKids, unavailableChildren, unavailableKidsArray, isSpousePresent)
+                    firstDegreeResultsWithUnaAndGrandkids(numberOfKids, unavailableChildren, zeroGrandkids, isSpousePresent)
                 )
             })
     })
 }
 
 //^^ Results for first degree if there are unavailable kids and grandkids
-function firstDegreeResultsWithUnaAndGrandkids(numberOfKids, unavailableChildren, unavailableKidsArray, isSpousePresent) {
+function firstDegreeResultsWithUnaAndGrandkids(numberOfKids, unavailableChildren, zeroGrandkids, isSpousePresent) {
     mainDiv.classList.remove("main-div-for-questions")
     mainDiv.classList.add("main-div-for-questions-result")
 
     lawSuccessionText('Prvi');
 
-    let numberOfNNKids = 0;
-    let numberOfNNKidsWithKids = 0;
-    let restOfKids = numberOfKids - numberOfNNKids;
-
-    unavailableKidsArray.forEach(obj => {
-        if (obj.value === 0) {
-            numberOfNNKids++;
-        } else  {
-            numberOfNNKidsWithKids++;
-        }
-    });
+    let numberOfNNKids = unavailableChildren;
+    let numberOfNNKidsWithKids = zeroGrandkids;
 
     if (isSpousePresent) {
         mainTextP.innerHTML = `
         Imovina se dijeli zakonski u prvom nasljednom redu<hr>
         Ukupan broj djece bez obzira da li su živi, mrtvi ili fiktivno mrtvi je <span class="result-number">(${numberOfKids})</span><br>
-        Ukupan broj djece koja <span class="result-negative">ne mogu naslijediti niti imaju potomke da mogu naslijediti za njih je</span><span class="result-number">(${numberOfNNKids})</span><br>
+        Ukupan broj djece koja <span class="result-negative">ne mogu naslijediti niti imaju potomke da mogu naslijediti za njih je </span><span class="result-number">(${numberOfNNKids})</span><br>
         Dakle kad maknemo tu djecu, ostane nam <span class="result-neutral">${numberOfKids} - ${numberOfNNKids} = ${numberOfKids - numberOfNNKids} + dodajemo i bračnog/vanbračnog partnera tako da je broj nasljednika ${(numberOfKids -  numberOfNNKids) + isSpousePresent}</span><br><hr><br>
 
         Imovina se dijeli preostalim nasljednicima<span class="result-number">(${(numberOfKids -  numberOfNNKids) + isSpousePresent})</span> <span class="result-neutral">per capita</span> jednako po glavi tako da partner i djeca <span class="result-positive">dobijaju po ${Number(inheritance / ((numberOfKids -  numberOfNNKids) + isSpousePresent)).toFixed(1)}% imovine</span><br><br>
@@ -1027,7 +635,6 @@ function firstDegreeResultsWithUnaAndGrandkids(numberOfKids, unavailableChildren
         
         s tim da <span class="result-number">(${numberOfNNKidsWithKids})</span> djece <span class="result-negative">neće direktno dobiti imovinu</span> već njihov dio se dijeli jednako njihovoj djeci<br>`
     }
-
 
     optionsDiv.innerHTML = ''
 }
@@ -1236,10 +843,11 @@ function siblingsCheck(isSpousePresent, parents) {
                 }
             })
 
+            let spouseInheritance;
             if(isSpousePresent && (parentIsAlive || siblings > 0 || fatherSibs > 0 || motherSibs > 0)) {
-                inheritance /= 2;
+                spouseInheritance = inheritance / 2;
             }
-            let parentInheritance = inheritance;
+            let parentInheritance = spouseInheritance;
 
             if (siblings > 0 || fatherSibs > 0 || motherSibs > 0) {
                 parentInheritance /= 2;
@@ -1249,7 +857,7 @@ function siblingsCheck(isSpousePresent, parents) {
 
             if(isSpousePresent) {
                 secondDegreeText += `
-                Supružnik <span class="result-positive">dobija ${Number(inheritance).toFixed(1)}% imovine</span><br>`
+                Supružnik <span class="result-positive">dobija ${Number(spouseInheritance).toFixed(1)}% imovine</span><br>`
             }
 
             if(parentIsAlive) {
@@ -1278,23 +886,23 @@ function siblingsCheck(isSpousePresent, parents) {
             } else {
                 if (siblings > 0 && fatherSibs === 0 && motherSibs === 0) {
                     secondDegreeText += `
-                    Braća i sestre dobijaju <span class="result-number">(${siblings})</span><span class="result-positive"> svako po ${Number(inheritance / siblings).toFixed(1)}% imovine</span><br>`
+                    Braća i sestre dobijaju <span class="result-number">(${siblings})</span><span class="result-positive"> svako po ${Number(spouseInheritance / siblings).toFixed(1)}% imovine</span><br>`
                 } else if (siblings === 0 && fatherSibs > 0 && motherSibs > 0) {
                     secondDegreeText += `
                     Polubraća i polusestre po ocu dobijaju <span class="result-number">(${fatherSibs})</span><span class="result-positive"> svako po ${Number(parentInheritance / fatherSibs).toFixed(1)}% imovine</span><br>
                     Polubraća i polusestre po majci dobijaju <span class="result-number">(${motherSibs})</span><span class="result-positive"> svako po ${Number(parentInheritance / motherSibs).toFixed(1)}% imovine</span><br>`
                 } else if (siblings === 0 && fatherSibs === 0 && motherSibs > 0) {
                     secondDegreeText += `
-                    Polubraća i polusestre po majci dobijaju <span class="result-number">(${motherSibs})</span><span class="result-positive"> svako po ${Number(inheritance / motherSibs).toFixed(1)}% imovine</span><br>`
+                    Polubraća i polusestre po majci dobijaju <span class="result-number">(${motherSibs})</span><span class="result-positive"> svako po ${Number(spouseInheritance / motherSibs).toFixed(1)}% imovine</span><br>`
                 } else if (siblings === 0 && fatherSibs > 0 && motherSibs === 0) {
                     secondDegreeText += `
-                    Polubraća i polusestre po ocu dobijaju <span class="result-number">(${fatherSibs})</span><span class="result-positive"> svako po ${Number(inheritance / fatherSibs).toFixed(1)}% imovine</span><br>`
+                    Polubraća i polusestre po ocu dobijaju <span class="result-number">(${fatherSibs})</span><span class="result-positive"> svako po ${Number(spouseInheritance / fatherSibs).toFixed(1)}% imovine</span><br>`
                 } else if (siblings > 0 && fatherSibs === 0 && motherSibs > 0) {
                     secondDegreeText += `
-                    Djeca od mame dobijaju <span class="result-number">(${motherSibs + siblings})</span><span class="result-positive"> svako po ${Number(inheritance / (motherSibs + siblings)).toFixed(1)}% imovine</span><br>`
+                    Djeca od mame dobijaju <span class="result-number">(${motherSibs + siblings})</span><span class="result-positive"> svako po ${Number(spouseInheritance / (motherSibs + siblings)).toFixed(1)}% imovine</span><br>`
                 } else if (siblings > 0 && fatherSibs > 0 && motherSibs === 0) {
                     secondDegreeText += `
-                    Djeca od oca dobijaju <span class="result-number">(${fatherSibs + siblings})</span><span class="result-positive"> svako po ${Number(inheritance / (fatherSibs + siblings)).toFixed(1)}% imovine</span><br>`
+                    Djeca od oca dobijaju <span class="result-number">(${fatherSibs + siblings})</span><span class="result-positive"> svako po ${Number(spouseInheritance / (fatherSibs + siblings)).toFixed(1)}% imovine</span><br>`
                 } else if (siblings > 0 && fatherSibs > 0 && motherSibs > 0) {
                     let dadPercentage = parentInheritance / (fatherSibs + siblings);
                     let momPercentage = parentInheritance / (motherSibs + siblings);
@@ -1330,6 +938,10 @@ function secondDegreeResultsWithoutBothParents (secondDegreeText) {
 
     mainTextP.innerHTML = `Imovina se dijeli zakonski u drugom nasljednom redu <hr>`
     mainTextP.innerHTML += secondDegreeText;
+    if (willStatus) {
+        mainTextP.innerHTML += `
+        <hr>Testamentom je podijeljeno <span class="result-positive">${100 - inheritance}% imovine</span><br>`
+    }
     
     optionsDiv.innerHTML = ''
 }
@@ -1354,6 +966,11 @@ function secondDegreeResultsTrio (isSpousePresent, isMotherAlive, isFatherAlive)
         Ukupan broj nasljednika je <span class="result-number">(2)</span><br>
         Imovinu <span class="result-positive">dijele zajednički otac i majka ostavitelja po ${Number(inheritance / 2).toFixed(1)}%</span>`
     } 
+
+    if (willStatus) {
+        mainTextP.innerHTML += `
+        <hr>Testamentom je podijeljeno <span class="result-positive">${100 - inheritance}% imovine</span><br>`
+    }
 
     optionsDiv.innerHTML = '';
 }
@@ -1395,8 +1012,7 @@ function thirdDegreeCheck () {
             let allAliveDadSide = dadGrandparents.every(obj => obj.value === true);
 
             let sharedTextDadSide = ''
-            inheritance = 50;
-            let dadInheritance = inheritance
+            let dadInheritance = inheritance / 2;
 
             if (allAliveDadSide) {
                 sharedTextDadSide += `
@@ -1410,7 +1026,6 @@ function thirdDegreeCheck () {
                     thirdDegreeKidsByDadSide(inheritance, dadGrandparents)
                 )
             }
-
         })
     })
 }
@@ -1481,12 +1096,11 @@ function thirdDegreeKidsByDadSide (inheritance,dadGrandparents) {
                 }
             })
 
-            if ((shared || grandmaKids ||grandpaKids) > 0 || aliveParent) {
-                inheritance = 50;
-            } 
-
             let dadInheritance = inheritance
             let sharedTextDadSide = ''
+            if ((shared || grandmaKids ||grandpaKids) > 0 || aliveParent) {
+                dadInheritance /= 2;
+            } 
 
             if (aliveParent) {
                 if (grandmaKids > 0 ||grandpaKids > 0 || shared > 0) {
@@ -1597,8 +1211,7 @@ function thirdDegreeMomCheck (inheritance, sharedTextDadSide) {
             let allAliveMomSide = momGrandparents.every(obj => obj.value === true);
 
             let sharedTextMomSide = ''
-            inheritance = 50;
-            let momInheritance = inheritance
+            let momInheritance = inheritance / 2;
 
             if (allAliveMomSide) {
                 sharedTextMomSide += `
@@ -1682,12 +1295,11 @@ function thirdDegreeKidsByMomSide(inheritance, sharedTextDadSide, momGrandparent
                 }
             })
 
-            if ((shared || grandmaKids ||grandpaKids) > 0 || aliveParent) {
-                inheritance = 50;
-            } 
-
-            let momInheritance = inheritance
+            let momInheritance = inheritance;
             let sharedTextMomSide = ''
+            if ((shared || grandmaKids ||grandpaKids) > 0 || aliveParent) {
+                momInheritance /= 2;
+            } 
 
             if (aliveParent) {
                 if (grandmaKids > 0 ||grandpaKids > 0 || shared > 0) {
@@ -1786,6 +1398,11 @@ function thirdDegreeRes (sharedTextDadSide, sharedTextMomSide) {
         mainTextP.innerHTML += sharedTextMomSide
     }
 
+    if (willStatus) {
+        mainTextP.innerHTML += `
+        <hr>Testamentom je podijeljeno <span class="result-positive">${100 - inheritance}% imovine</span><br>`
+    }
+
     optionsDiv.innerHTML = ''
 }
 
@@ -1801,13 +1418,3 @@ function multiplyNumbersByTwo (text) {
 
     return updatedText;
 }
-
-
-
-
-
-  
-
-
-
-
