@@ -28,7 +28,7 @@ body {
     gap: 0;
     margin: 0;
     align-items: center;
-    animation: hide-nav 200ms ease-out forwards
+    animation: hide-nav 100ms ease-out forwards
 }
 
 @keyframes hide-nav {
@@ -59,7 +59,7 @@ body {
     gap: 10px;
     margin: 10px;
     align-items: center;
-    animation: show-nav 200ms ease-in forwards
+    animation: show-nav 100ms ease-in forwards
 }
 
 @keyframes show-nav {
@@ -448,13 +448,13 @@ footer {
         padding: 0;
         background-color: darkslategray;
         display: grid;
-        grid-template-rows: 7% 88% 5%;
+        grid-template-rows: 10% 85% 6%;
         grid-template-columns: 5% 95%;
         height: 100vh;
         width: 100vw;
         grid-template-areas:
             "header    header"
-            "nav    main"
+            "nav       main"
             "footer    footer"
     }
 
@@ -491,7 +491,7 @@ footer {
     .nav-show {
         background-color: whitesmoke;
         grid-area: nav;
-        width: 250px;
+        width: 280px;
         border-radius: 10px;
         display: flex;
         flex-direction: column;
@@ -499,7 +499,8 @@ footer {
         gap: 10px;
         margin: 10px;
         align-items: center;
-        animation: show-nav 200ms ease-in forwards
+        z-index: 2;
+        animation: show-nav 200ms ease-in forwards;
     }
 
     @keyframes show-nav {
@@ -514,6 +515,35 @@ footer {
             opacity: 1;
             transform: translate(0px);
         }
+    }
+
+    .main-div-for-questions {
+        width: 320px;
+        height: 520px;
+        border-radius: 5px 0 0 5px;
+        background-color: whitesmoke;
+        box-shadow: 3px 3px black;
+        display: grid;
+        grid-template-rows: 8% 65% 27%;
+        z-index: 1;
+    }
+
+    .hide-div {
+        display: none;
+    }
+
+    .hide-result {
+        display: none;
+    }
+
+    .main-div-for-questions-result {
+        width: 320px;
+        height: 520px;
+        border-radius: 5px;
+        background-color: whitesmoke;
+        box-shadow: 3px 3px black;
+        display: grid;
+        grid-template-rows: 15% 84% 1%;
     }
 
     nav ul {
@@ -570,36 +600,38 @@ footer {
     }
 
     .header-wrapper {
-        width: 400px;
-        height: 45px;
+        width: 350px;
+        height: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
     .calc-design {
-        width: 70px;
-        height: 50px;
+        width: 30px;
+        height: 40px;
     }
 
     .calc-body {
-        width: 60px;
-        height: 50px;
+        width: 30px;
+        height: 40px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 0px;
     }
 
     .calc-screen {
-        width: 45px;
-        height: 15px;
+        width: 20px;
+        height: 7px;
         outline: 1px darkslategray solid;
         border-radius: 5px;
+        position: relative;
+        top: 2px;
     }
 
     .calc-button-div {
-        width: 40px;
+        width: 23px;
         height: 30px;
         display: flex;
         flex-wrap: wrap;
@@ -608,26 +640,26 @@ footer {
         align-items: center;
         align-content: center;
         position: relative;
-        right: 5px;
+        left: 0px;
     }
 
     .calc-buttons {
-        width: 8px;
-        height: 8px;
+        width: 4px;
+        height: 4px;
         border-radius: 100%;
         background-color: darkslategray;
     }
 
     .hamburger-menu {
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 2px;
         align-items: center;
         position: absolute;
-        left: 5px;
+        left: 7px;
     }
 
     .hamburger-menu:hover {
@@ -635,8 +667,8 @@ footer {
     }
 
     .hamburger-menu div {
-        width: 40px;
-        height: 8px;
+        width: 30px;
+        height: 7px;
         background-color: darkslategrey;
         border-radius: 5px;
     }
@@ -645,28 +677,6 @@ footer {
         grid-area: main;
         display: grid;
         place-content: center;
-    }
-
-    .main-div-for-questions {
-        width: 350px;
-        height: 600px;
-        border-radius: 5px;
-        background-color: whitesmoke;
-        box-shadow: 3px 3px black;
-        display: grid;
-        grid-template-rows: 15% 50% 35%;
-        position: relative;
-        right: 10px
-    }
-
-    .main-div-for-questions-result {
-        width: 350px;
-        height: 600px;
-        border-radius: 5px;
-        background-color: whitesmoke;
-        box-shadow: 3px 3px black;
-        display: grid;
-        grid-template-rows: 15% 84% 1%;
     }
 
     .main-div-header {
@@ -682,14 +692,12 @@ footer {
     #stop-calculator {
         background-color: darkred;
         border: none;
-        width: 30px;
-        height: 100px;
-        border-radius: 0 0 5px 0;
+        width: 25px;
+        height: 80px;
+        border-radius: 5px 0 0 5px;
+        font-size: x-large;
         position: relative;
-        bottom: 40px;
-        font-size: xx-large;
-        right: 160px;
-        top: 0px
+        right: 168px;
     }
     
     #header-for-text {

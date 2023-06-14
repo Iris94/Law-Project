@@ -50,6 +50,7 @@ previousBtn.addEventListener("click", function() {
 
 //^^Setting up attributes and appendings
 mainDiv.classList.add("main-div-for-questions");
+mainDiv.setAttribute("id", "mainDiv")
 headerDiv.classList.add("main-div-header");
 headerH3.setAttribute("id", "header-for-text");
 headerDiv.appendChild(headerH3);
@@ -115,15 +116,21 @@ function createTextForListings() {
                 switch (list) {
                     case listingOne:
                         descriptionForListings.style.display = "block"
-                        descriptionForListings.innerHTML = "Diplomirao sam na Pravnom Fakultetu Univerziteta u Tuzli 2021 godine. Bez obzira što se nisam pronašao u toj oblasti, odlučio sam da maksimalno iskoristim znanje koje sam usvojio na tom fakultetu da pomognem ljudima u raznim oblastima. Jedna od njih je i nasljedno pravo"
+                        descriptionForListings.innerHTML = "Diplomirao sam na Pravnom fakultetu Univerziteta u Tuzli 2021. godine. Bez obzira na to što se nisam pronašao u toj oblasti, odlučio sam da maksimalno iskoristim znanje koje sam stekao na tom fakultetu kako bih pomogao ljudima u različitim područjima. Jedno od njih je i nasljedno pravo"
                         break;
                     case listingTwo:
                         descriptionForListings.style.display = "block"
-                        descriptionForListings.innerHTML = "Spisak korisnih linkova se nalazi ovdje"
+                        descriptionForListings.innerHTML = `
+                        <a href="https://www.filesharesite.com/files/202306/168655820913468CF948745628B0F31BF8C754321F.html" target="_blank">Skripta za studente FBiH</a>
+                        <br>
+                        <a href="https://www.paragraf.ba/propisi/fbih/zakon-o-nasledjivanju-u-federaciji-bih.html" target="_blank">Zakon FBiH</a>
+                        <br>
+                        <a href="https://www.paragraf.ba/propisi/republika-srpska/zakon-o-nasljedjivanju.html">Zakon RS</a>
+                        `
                         break;
                     case listingThree:
                         descriptionForListings.style.display = "block"
-                        descriptionForListings.innerHTML = "Ovaj kalkulator služi da vas spasi od troškova plaćanja advokatima za stvari koje se ne mogu promjeniti jer su zakonski određene. U slučaju da nema testamenta ili ugovora o nasljeđivanju, ovaj kalkulator će vam izračunati kako se dijeli imovina i možete slobodno preskočiti plačanje advokata jer ne može ništa poduzeti osim da vam uzme novac, živce i vrijeme za slučaj koji ne možete dobiti"
+                        descriptionForListings.innerHTML = "Ovaj kalkulator služi da vas oslobodi troškova angažiranja advokata za stvari koje se ne mogu promijeniti jer su zakonski određene. U slučaju da ne postoji testament ili ugovor o nasljeđivanju, ovaj kalkulator će vam pomoći izračunati način podjele imovine te vam omogućiti da preskočite plaćanje advokata jer on ne može preduzeti ništa osim uzimanja vašeg novca, živaca i vremena za slučaj koji ne možete dobiti"
                         break;
                 }
             }
@@ -132,8 +139,12 @@ function createTextForListings() {
 }
 createTextForListings()
 
+
 // ^^Function to expand NAV menu with hamburger div
 menuToggle.onclick = function () {
+    let windowWidth = window.innerWidth;
+
+    if (windowWidth > 600) {
     if (navMenu.classList.contains("nav-hidden")) {
         navMenu.classList.remove("nav-hidden");
         navMenu.classList.add("nav-show");
@@ -147,6 +158,41 @@ menuToggle.onclick = function () {
             hamburgerMenu[i].style.backgroundColor = "darkslategrey";
         }
     }
+}
+
+    if (windowWidth < 600) {
+        if (navMenu.classList.contains("nav-hidden")) {
+            
+            if (mainDiv.classList.contains("main-div-for-questions")) {
+                mainDiv.classList.remove("main-div-for-questions");
+                mainDiv.classList.add("hide-div")
+            } else if (mainDiv.classList.contains("main-div-for-questions-result")) {
+                mainDiv.classList.remove("main-div-for-questions-result");
+                mainDiv.classList.add("hide-result");
+            }
+
+            navMenu.classList.remove("nav-hidden");
+            navMenu.classList.add("nav-show");
+            for (let i = 0; i < hamburgerMenu.length; i++) {
+                hamburgerMenu[i].style.backgroundColor = "palevioletred";
+            }
+        } else {
+            
+            if (mainDiv.classList.contains("hide-div")) {
+                mainDiv.classList.remove("hide-div");
+                mainDiv.classList.add("main-div-for-questions")
+            } else if (mainDiv.classList.contains("hide-result")) {
+                mainDiv.classList.remove("hide-result");
+                mainDiv.classList.add("main-div-for-questions-result")
+            }
+
+            navMenu.classList.remove("nav-show");
+            navMenu.classList.add("nav-hidden");
+            for (let i = 0; i < hamburgerMenu.length; i++) {
+                hamburgerMenu[i].style.backgroundColor = "darkslategrey";
+            }
+        }
+    }
 };
 
 //^^Function to set up main div before any question is introduced. Based on this function, rest of code will be manipulated
@@ -155,7 +201,9 @@ function setMainDivInMotion() {
     mainDiv.classList.add("main-div-for-questions")
     headerH3.textContent = 'Uputstvo za korištenje';
     mainTextP.innerHTML = `
-    Pritisnete dugme na kojem piše "Započnite" i pratite upute. U slučaju da želite da se vratite na početak i isprobate neku drugu opciju, imate crveno dugme sa lijeve strane. Bit će ponuđete tri opcije u vidu ugovora, testamenta ili zakonske podjele imovine. Fokus kalkulatora je na zakonskoj podjeli ali imate ukratko i objašnjenja u slučaju da postoji testament ili ugovor.`;
+    Pritisnite dugme označeno sa "Započnite" i pratite upute. U slučaju da se želite vratiti na početak i isprobati neku drugu opciju, tu je crveno dugme s lijeve strane. Kao opcije imate <span class="result-neutral">zakonsku podjelu imovine</span> i tri različita info panela.
+    <br>
+    Ako se imovina dijeli zakonski, <span class="result-positive">nema razlike u FBiH i RS-u.</span> Ipak, ovaj kalkulator je pisan primarno za FBiH tako da ako ste iz RS-a i postoji testament ili ugovor, preporučujemo advokata jer su na primjer različiti nužni nasljednici`;
 
     optionsDiv.innerHTML = `
     <div class="forms">
@@ -179,7 +227,7 @@ setMainDivInMotion()
 //^^Function to set first question
 function setFirstQuestion() {
     headerH3.textContent = 'Odaberite jedno'
-    mainTextP.textContent = 'Izaberite zakonsko nasljeđivanje ili informacije o testamentu i ugovorima'
+    mainTextP.textContent = 'Izaberite zakonsko nasljeđivanje ili informacije o testamentu, ugovorima i nužnom dijelu'
 
     optionsDiv.innerHTML =
     `
@@ -233,7 +281,35 @@ function nextFunctionForForcedShare() {
     return new Promise (resolve => {
         headerH3.textContent = 'Nužni dio';
         mainTextP.innerHTML = `
-        Nužni nasljednici su oni koji su trebali zakonom da naslijede ali nemaju tu mogućnost zbog ugovora/testamenta ili raspoloživi dio ostavine nije dovoljno velik. Suštinski samo treba da pratite kalkulator i obratite pažnju na sljedeće. Bračni/vanbračni partner, djeca i potpuni usvojenik${tooltip('Usvojeno dijete koje ima jednaka prava kao biološko')} dobijaju pola od onoga što bi inače dobili. Na primjer ako je bračni/vanbračni partner trebao da dobije 1/3, onda će dobiti 1/6. Odradite kalkulator i upolovite. Ako se imovina po kalkulatoru dijeli na roditelje, braću i sestre ili postoji nepotpuni usvojenik${tooltip('Nema ista prava kao biološka djeca')}, oni dobijaju 3x manje nego što bi inače dobili. Dakle njihov dio dijelite sa tri pod uslovom da nemaju nužnih sredstava za život i da su nesposobni za rad. Ako ne ispunjavaju ta dva uslova, nisu nužni nasljednici`
+        U slučaju nužnih nasljednika, oni su osobe koje bi inače naslijedile imovinu prema zakonu, ali nemaju tu mogućnost zbog postojanja ugovora ili testamenta koji određuje drugačiju raspodjelu ili zbog nedostatka dovoljnog raspoloživog dijela ostavine. Bračni/vanbračni partner, djeca i potpuni usvojenik${tooltip('Usvojeno dijete koje ima jednaka prava kao biološko')} dobijaju pola od onoga što bi inače dobili. Na primjer, ako je bračni/vanbračni partner trebao dobiti 1/3, on će dobiti 1/6. Molim vas da koristite kalkulator i upolovite njihov dio`
+
+        optionsDiv.innerHTML = `
+        <div class="forms">
+        <form id="form" class="radio-form">
+        <div class="forms-text">
+        </div>
+        <div class="forms-input">
+        <input type="submit" value="Dalje" class="input-submit">
+        </div>
+        </form>
+        </div>`
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            resolve(
+                nextFunctionForForcedSharePartTwo()
+            )
+        })
+    })
+}
+
+//^^ Function to explain forced share
+function nextFunctionForForcedSharePartTwo() {
+    return new Promise (resolve => {
+        headerH3.textContent = 'Nužni dio';
+        mainTextP.innerHTML = `
+        Ako se imovina po kalkulatoru dijeli na roditelje, braću i sestre ili postoji nepotpuni usvojenik${tooltip('Nema ista prava kao biološka djeca')}, njihov dio će biti tri puta manji nego što bi inače dobili. Dakle, njihov dio podijelite s tri, pod uslovom da nemaju dovoljno sredstava za život i da su nesposobni za rad. Ako ne ispunjavaju ova dva uslova, nisu nužni nasljednici.`
 
         optionsDiv.innerHTML = `
         <div class="forms">
@@ -261,7 +337,7 @@ function nextFunctionForContract () {
     return new Promise (resolve => {
         headerH3.textContent = 'Ugovori';
         mainTextP.innerHTML = `
-        Ugovor o nasljeđivanju mogu potpisati bračni/vanbračni partneri. Ugovor je ništavan(nevažeći) ako se s njim imovina ili njen dio ostavljaju saugovaraču ili trećoj osobi. Dakle bitno je da su u pitanju bračni/vanbračni partneri. Ugovor ima prednost ispred testamenta i zakonskog nasljeđivanja.U slučaju prestanka braka prestaje i ovaj ugovor. Preporučujemo advokata da se provjeri punovažnost ovog ugovora. Bez obzira na njegovo postojanje, i ovdje postoji nužni dio. Pogledati info o nužnom dijelu za više informacija.`
+        Ugovor o nasljeđivanju mogu potpisati bračni/vanbračni partneri. Ugovor je ništavan (nevažeći) ako se njime imovina ili njen dio ostavlja saugovaraču ili trećoj osobi. Dakle, bitno je da su u pitanju bračni/vanbračni partneri. Ugovor ima prednost ispred testamenta i zakonskog nasljeđivanja. U slučaju prestanka braka, prestaje i ovaj ugovor. Preporučujemo da se konsultujete s advokatom kako biste provjerili punovažnost ovog ugovora. Bez obzira na njegovo postojanje, i ovdje postoji nužni dio. Za više informacija, pogledajte informacije o nužnom dijelu.`
 
         optionsDiv.innerHTML = `
         <div class="forms">
@@ -289,7 +365,7 @@ function contractPartTwo () {
     return new Promise (resolve => {
         headerH3.textContent = 'Ugovori';
         mainTextP.innerHTML = `
-        Ugovorom se može raspodjeliti imovina i djeci i drugim potomcima pod uslovom da su se s tim saglasila sva djeca i potomci koji bi po zakoni bili pozvani da naslijede. U suštini je ovo najčistija i najbolja forma ako se svi odmah slože kome šta ide nakon smrti ostavitelja.`
+        Ugovorom se imovina može raspodijeliti i djeci i drugim potomcima, pod uvjetom da su sva djeca i potomci koji bi po zakonu bili pozvani da naslijede saglasni s tim. U suštini, ovo je najčišći i najbolji način ako se svi odmah slože o tome kome šta ide nakon smrti ostavitelja.`
 
         optionsDiv.innerHTML = `
         <div class="forms">
@@ -317,7 +393,7 @@ function contractPartThree() {
     return new Promise (resolve => {
         headerH3.textContent = 'Ugovori';
         mainTextP.innerHTML = `
-        Ugovor o doživotnom izdržavanju govori o tome da jedna osoba izdržava drugu i brine o njoj do kraja njenog života a za uzvrat dobija imovinu tokom života ili nakon smrti. Preporučujemo advokata da provjeri oborivost ovog ugovora ali u 90% situacija isljučuje nužne nasljednike i neoboriv je na sudu. Sada se vraćamo na početni slajd gdje možete provjeriti dodatni info ili pokrenuti kalkulator`
+        Ugovor o doživotnom izdržavanju regulira situaciju u kojoj jedna osoba pruža izdržavanje i brigu o drugoj osobi do kraja njenog života, dok za uzvrat dobija imovinu tokom života ili nakon smrti te osobe. Preporučujemo konsultaciju s advokatom radi provjere valjanosti ovog ugovora, ali u većini situacija on isključuje nužne nasljednike i može biti neoboriv na sudu u oko 90% slučajeva. Sada se možete vratiti na početni slajd kako biste provjerili dodatne informacije ili pokrenuli kalkulator.`
 
         optionsDiv.innerHTML = `
         <div class="forms">
@@ -343,7 +419,8 @@ function contractPartThree() {
 //^^ Function to count number of chilren
 function childrenCheck() {
     return new Promise(resolve => {
-        mainTextP.textContent = 'Koliko djece je ostalo iza ostavitelja. Bračna i vanbračna su izjednačena. Samo u ovom slučaju brojimo i djecu koja su ranije umrla, nedostojna itd itd. Bitno je samo da ih je u jednom trenutku imao';
+        mainTextP.textContent = 'Koliko djece je ostalo iza ostavitelja? Važno je napomenuti da brojimo svu djecu koju je ostavitelj imao, bez obzira na njihov trenutni status (živa, preminula, nedostojna itd.), kako bismo utvrdili njihovo nasljeđivanje. To uključuje i bračnu i vanbračnu djecu. Dakle, prilikom utvrđivanja nasljednika, bitno je samo da je ostavitelj u jednom trenutku imao tu djecu';
+
         optionsDiv.innerHTML = `
         <div class="forms">
         <form id="form" class="radio-form">
@@ -391,7 +468,7 @@ function nextFunctionForWill() {
     return new Promise (resolve => {
         headerH3.textContent = 'Testament';
         mainTextP.innerHTML = `
-        U slučaju da postoji testament, preporučujemo da se provjeri njegova punovažnost na sudu. Neko laičko pravilo je da ako je testament napisao i potpisao svojom rukom ostavitelj ili je testament urađen od strane notara / suda sa svim potpisima i svjedocima, uglavnom je punovažan. Ako postoji usmeni testament uglavnom je nevažeči jer su potrebni uslovi poput požara, poplava, sudara i situacija u kojima ostavitelj nije imao mogućnost da ga drugačije sastavi`
+        U slučaju postojanja testamenta, preporučuje se provjeriti njegovu punovažnost na sudu. Laičko pravilo je da, ako je testament napisao i potpisao svojom rukom ostavitelj ili je testament urađen od strane notara/suda sa svim potpisima i svjedocima, uglavnom je punovažan. Međutim, ukoliko postoji usmeni testament, uglavnom je nevažeći, osim u slučajevima kao što su požar, poplava, sudar i situacije u kojima ostavitelj nije imao mogućnost da ga drugačije sastavi. Preporučuje se provjera punovažnosti testamenta kod stručnog advokata ili na sudu.`
 
         optionsDiv.innerHTML = `
         <div class="forms">
@@ -419,7 +496,7 @@ function willPartTwo () {
     return new Promise (resolve => {
         headerH3.textContent = 'Testament'
         mainTextP.innerHTML = `
-        U slučaju da je testament punovažan, uglavnom se sa njim isključuje neko od nasljednika i ostavlja imovina ostalima. Ako se ne isključe potencijalni nasljednici koji bi po zakonu dobili svoj dio a ne mogu zbog testamenta, oni postaju nužni nasljednici. Za više informacija o nužnim nasljednicima pogledati info o njima. Druga opcija je da je sva imovina raspodjeljena jednako tako da niko od nasljednika nije oštećen. I treća je da se sa testamentom nalaže da se nešto uradi, isplate legati, pokloni itd itd. Uglavnom testamenti završavaju sa tužbama za nužni dio.`
+        U slučaju da je testament punovažan, obično se njime isključuje neki od potencijalnih nasljednika, a imovina se ostavlja drugim nasljednicima. Ako testament ne isključuje nasljednike koji bi inače dobili svoj dio po zakonu, oni postaju nužni nasljednici. Za više informacija o nužnim nasljednicima, molimo pogledajte dodatne informacije o njima. Druga mogućnost je da se sva imovina ravnomjerno raspodijeli među nasljednicima, tako da niko nije oštećen. Treća opcija je da testament sadrži određene upute, kao što su isplate legata, pokloni i sl. Često se testamenti završavaju sudskim sporovima u vezi s nužnim dijelom nasljedstva.`
 
         optionsDiv.innerHTML = `
         <div class="forms">
@@ -447,7 +524,7 @@ function willPartThree () {
     return new Promise (resolve => {
         headerH3.textContent = 'Testament';
         mainTextP.innerHTML = `
-        U svakom slučaju postoji previše varijacija sa testamentom tako da je preporuka advokat. Tražite slobodno da se prvo utvrdi punovažnost testamenta i budite svjesni da ako neko nije isključen testamentom, ima pravo na nužni dio. Jedino nemaju pravo djedovi i bake i stariji nasljednici. Preko kalkulatora možete dobiti informacije koliko ko dobija imovine i tako izračunati i nužni dio sa informacijama koje imate u info. Nemojte dopustiti da vas zavlače godinama na sudu. Sada se vračamo na početak gdje možete provjeriti informacije ili ići na direktno računanje`
+        U svakom slučaju, preporučuje se konsultacija s advokatom radi utvrđivanja punovažnosti testamenta. Važno je biti svjestan da, ukoliko neko nije isključen testamentom, ima pravo na nužni dio nasljedstva. Međutim, djedovi, bake i stariji nasljednici nemaju pravo na nužni dio. Korištenjem kalkulatora možete dobiti informacije o tome koliko svaki nasljednik dobija imovine i izračunati nužni dio na osnovu dostupnih informacija iz uputstva. Važno je ne dozvoliti da se sporovi na sudu protežu godinama. Sada se možete vratiti na početak kako biste provjerili informacije ili krenuli direktno na računanje.`
 
         optionsDiv.innerHTML = `
         <div class="forms">
@@ -544,7 +621,7 @@ function grandKidsCheck (numberOfKids, unavailableChildren) {
     return new Promise (resolve => {
         lawSuccessionText('Prvi');
         mainTextP.innerHTML = `
-        Koliko prethodno odabrane djece (umrli, nedostojni, isključeni ili odrekli se u vlastito ime) ima svoju djecu koja mogu naslijediti za njih (ostaviteljevi unuci / unuke)`;
+        Koliko od prethodno odabrane djece (koja su umrla, nedostojna, isključena ili su se odrekla u vlastito ime) ima vlastitu djecu koja mogu naslijediti umjesto njih (ostaviteljevi unuci/unuke)?`;
 
         let selectOptions = '';
         for (let i = 0; i <= unavailableChildren; i++) {
@@ -616,24 +693,30 @@ function firstDegreeResultsWithUnaAndGrandkids(numberOfKids, unavailableChildren
 
     if (isSpousePresent) {
         mainTextP.innerHTML = `
-        Imovina se dijeli zakonski u prvom nasljednom redu<hr>
-        Ukupan broj djece bez obzira da li su živi, mrtvi ili fiktivno mrtvi je <span class="result-number">(${numberOfKids})</span><br>
-        Ukupan broj djece koja <span class="result-negative">ne mogu naslijediti niti imaju potomke da mogu naslijediti za njih je </span><span class="result-number">(${numberOfNNKids})</span><br>
-        Dakle kad maknemo tu djecu, ostane nam <span class="result-neutral">${numberOfKids} - ${numberOfNNKids} = ${numberOfKids - numberOfNNKids} + dodajemo i bračnog/vanbračnog partnera tako da je broj nasljednika ${(numberOfKids -  numberOfNNKids) + isSpousePresent}</span><br><hr><br>
-
-        Imovina se dijeli preostalim nasljednicima<span class="result-number">(${(numberOfKids -  numberOfNNKids) + isSpousePresent})</span> <span class="result-neutral">per capita</span> jednako po glavi tako da partner i djeca <span class="result-positive">dobijaju po ${Number(inheritance / ((numberOfKids -  numberOfNNKids) + isSpousePresent)).toFixed(1)}% imovine</span><br><br>
-
-        s tim da <span class="result-number">(${numberOfNNKidsWithKids})</span> djece <span class="result-negative">neće direktno dobiti imovinu</span> već njihov dio se dijeli jednako njihovoj djeci<br>`
+        Imovina se dijeli zakonski u prvom nasljednom redu
+        <hr>
+        Ukupan broj djece bez obzira da li su živi, mrtvi ili fiktivno mrtvi je <span class="result-number">(${numberOfKids})</span>
+        <br>
+        Od toga broj djece koja <span class="result-negative">ne mogu naslijediti niti imaju potomke koji bi mogli naslijediti umjesto njih je (${numberOfNNKids - numberOfNNKidsWithKids})</span>
+        dok broj djece koja isto ne mogu naslijediti ali <span class="result-positive">njihov dio će biti podijeljen jednako među njihovom djecom iznosi (${numberOfNNKidsWithKids})</span>
+        <br>
+        Dakle, kada isključimo djecu bez potomaka<span class="result-negative">(${numberOfNNKids - numberOfNNKidsWithKids})</span>, ostaju nam djeca koja mogu naslijediti<span class="result-positive">(${numberOfKids - (numberOfNNKids)})</span> i djeca koja ne mogu direktno naslijediti već njihov dio se dijeli njihovoj djeci<span class="result-positive">(${numberOfNNKidsWithKids})</span> <span class="result-neutral">${numberOfKids - numberOfNNKids} + ${numberOfNNKidsWithKids} = ${(numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids}</span>. Dodatno, dodajemo i bračnog/vanbračnog partnera, što ukupan broj nasljednika čini <span class="result-number">${(numberOfKids - (numberOfNNKids - numberOfNNKidsWithKids)) + isSpousePresent}</span>
+        <br>
+        <hr>
+        Imovina se dijeli preostalim nasljednicima, njih ukupno<span class="result-number">(${(numberOfKids - (numberOfNNKids - numberOfNNKidsWithKids)) + isSpousePresent})</span> po principu <span class="result-neutral">per capita</span> odnosno jednako po glavi. Partner i djeca <span class="result-positive">dobijaju po ${Number(inheritance / ((numberOfKids -  (numberOfNNKids - numberOfNNKidsWithKids)) + isSpousePresent)).toFixed(1)}% imovine</span>
+        `
     } else {
         mainTextP.innerHTML = `
-        Imovina se dijeli zakonski u prvom nasljednom redu<hr>
-        Ukupan broj djece bez obzira da li su živi, mrtvi ili fiktivno mrtvi je <span class="result-number">(${numberOfKids})</span><br>
-        Ukupan broj djece koja <span class="result-negative">ne mogu naslijediti niti imaju potomke da mogu naslijediti za njih je</span><span class="result-number">(${numberOfNNKids})</span><br>
-        Dakle kad maknemo tu djecu, ostane nam <span class="result-neutral">${numberOfKids} - ${numberOfNNKids} = ${numberOfKids - numberOfNNKids} tako da je broj nasljednika ${numberOfKids - numberOfNNKids}</span><br><hr><br>
-        
-        Imovina se dijeli preostalim nasljednicima<span class="result-number">(${numberOfKids - numberOfNNKids})</span> <span class="result-neutral">per capita</span> jednako po glavi tako da djeca <span class="result-positive">dobijaju po ${Number(inheritance / (numberOfKids -  numberOfNNKids)).toFixed(1)}% imovine</span><br><br>
-        
-        s tim da <span class="result-number">(${numberOfNNKidsWithKids})</span> djece <span class="result-negative">neće direktno dobiti imovinu</span> već njihov dio se dijeli jednako njihovoj djeci<br>`
+        Imovina se dijeli zakonski u prvom nasljednom redu
+        <hr>
+        Ukupan broj djece bez obzira da li su živi, mrtvi ili fiktivno mrtvi je <span class="result-number">(${numberOfKids})</span>
+        <br>
+        Od toga broj djece koja <span class="result-negative">ne mogu naslijediti niti imaju potomke koji bi mogli naslijediti umjesto njih je (${numberOfNNKids - numberOfNNKidsWithKids})</span>
+        dok broj djece koja isto ne mogu naslijediti ali <span class="result-positive">njihov dio će biti podijeljen jednako među njihovom djecom iznosi (${numberOfNNKidsWithKids})</span>
+        <br>
+        Dakle, kada isključimo djecu bez potomaka<span class="result-negative">(${numberOfNNKids - numberOfNNKidsWithKids})</span>, ostaju nam djeca koja mogu naslijediti<span class="result-positive">(${numberOfKids - (numberOfNNKids)})</span> i djeca koja ne mogu direktno naslijediti već njihov dio se dijeli njihovoj djeci<span class="result-positive">(${numberOfNNKidsWithKids})</span> <span class="result-neutral">${numberOfKids - numberOfNNKids} + ${numberOfNNKidsWithKids} = ${(numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids}</span>
+        <br>
+        Imovina se dijeli preostalim nasljednicima <span class="result-number">(${(numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids})</span>, <span class="result-neutral">jednako po glavi (per capita)</span>. tako da svi <span class="result-positive"> te svako dobija po ${Number(inheritance / ((numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids)).toFixed(1)}% imovine</span><br><br>`
     }
 
     optionsDiv.innerHTML = ''
@@ -664,16 +747,22 @@ function firstDegreeResultsWithUnaKids (numberOfKids, unavailableChildren, isSpo
     if (isSpousePresent) {
         mainTextP.innerHTML = `
         Imovina se dijeli zakonski u prvom nasljednom redu<hr>
-        Nasljednici su supružnik<span class="result-number">(1)</span> i djeca koja mogu da naslijede <span class="result-number">(${restOfKids})</span><br>
-        Broj djece koja <span class="result-negative">ne mogu da naslijede</span> zbog određenih faktora je <span class="result-number">(${unavailableChildren})</span><br>
-        Imovina se dijeli preostalim nasljednicima<span class="result-number">(${restOfKids + isSpousePresent})</span> <span class="result-neutral">per capita</span> jednako po glavi tako da <span class="result-positive">svako dobija po ${Number(inheritance / (restOfKids + isSpousePresent)).toFixed(1)}% imovine</span><br><hr><br>
-        <span class="result-neutral">Ako se sva djeca odreknu nasljedstva u ime ostaviteljevog supružnika, sva imovina idu njemu</span><br>
+        Nasljednici su supružnik <span class="result-number">(1)</span> i djeca koja mogu naslijediti <span class="result-number">(${restOfKids})</span>
+        <br>
+        Broj djece koja <span class="result-negative">ne mogu naslijediti</span> iz određenih razloga iznosi <span class="result-number">(${unavailableChildren})</span>
+        <br>
+        Imovina se dijeli supružniku i djeci koja mogu naslijediti, njihov ukupan broj iznosi <span class="result-number">(${restOfKids + isSpousePresent})</span>, <span class="result-neutral">jednako po glavi (per capita)</span>, tako da <span class="result-positive">svako dobija po ${Number(inheritance / (restOfKids + isSpousePresent)).toFixed(1)}% imovine</span>
+        <br>
+        <hr>
+        <br>
+        <span class="result-neutral">Ako se sva djeca odreknu nasljedstva u ime ostaviteljevog supružnika, sva imovina ide njemu.</span><br>
         `
     } else {
         mainTextP.innerHTML = `
         Imovina se dijeli zakonski u prvom nasljednom redu<hr>
-        Od<span class="result-number">(${numberOfKids})</span> djece, njih<span class="result-number">(${unavailableChildren})</span> <span class="result-negative">ne mogu da naslijede</span></span><br>
-        Preostala djeca<span class="result-number">(${restOfKids})</span> ostavitelja <span class="result-positive">dobijaju po ${Number(inheritance / restOfKids).toFixed(1)}% imovine</span><br>
+        Od ukupno <span class="result-number">(${numberOfKids})</span> djece, <span class="result-number">(${unavailableChildren})</span> njih <span class="result-negative">ne mogu naslijediti</span>
+        <br>
+        Preostala djeca, njih <span class="result-number">(${restOfKids})</span>, ostavitelja će <span class="result-positive">dobiti po ${Number(inheritance / restOfKids).toFixed(1)}% imovine</span>
         `
     }
 
@@ -703,14 +792,18 @@ function firstDegreeResultsWithKids (isSpousePresent, numberOfKids) {
     if (isSpousePresent) {
         mainTextP.innerHTML = `
         Imovina se dijeli zakonski u prvom nasljednom redu<hr>
-        Nasljednici su supružnik i djeca <span class="result-number">(${numberOfKids + isSpousePresent})</span><br>
-        Imovina se dijeli <span class="result-neutral">per capita</span> jednako po glavi tako da <span class="result-positive">svako dobija po ${Number(inheritance / (numberOfKids + isSpousePresent)).toFixed(1)}% imovine</span><br><hr><br>
-        <span class="result-neutral">Ako se sva djeca odreknu nasljedstva u ime ostaviteljevog supružnika, sva imovina idu njemu</span><br>
+        Nasljednici su supružnik i djeca <span class="result-number">(${numberOfKids + isSpousePresent})</span>
+        <br>
+        Imovina se dijeli <span class="result-neutral">per capita</span> jednako po glavi, što znači da svaki nasljednik dobija po ${Number(inheritance / (numberOfKids + isSpousePresent)).toFixed(1)}% imovine</span>
+        <br>
+        <hr>
+        <br>
+        <span class="result-neutral">Ako se sva djeca odreknu nasljedstva u ime ostaviteljevog supružnika, sva imovina ide njemu.</span>
         `
     } else {
         mainTextP.innerHTML = `
         Imovina se dijeli zakonski u prvom nasljednom redu<hr>
-        Nasljednici su djeca<span class="result-number">(${numberOfKids})</span> ostavitelja i <span class="result-positive">svako dobija po ${Number(inheritance / numberOfKids).toFixed(1)}% imovine</span><br>`
+        Nasljednici su djeca ostavitelja, njih ukupno <span class="result-number">(${numberOfKids})</span>.<span class="result-positive"> Svako od njih će dobiti po ${Number(inheritance / numberOfKids).toFixed(1)}% imovine</span><br>`
     }
 
     optionsDiv.innerHTML = ''
@@ -844,6 +937,8 @@ function siblingsCheck(isSpousePresent, parents) {
             })
 
             let spouseInheritance;
+            spouseInheritance = inheritance;
+
             if(isSpousePresent && (parentIsAlive || siblings > 0 || fatherSibs > 0 || motherSibs > 0)) {
                 spouseInheritance = inheritance / 2;
             }
@@ -898,11 +993,18 @@ function siblingsCheck(isSpousePresent, parents) {
                     secondDegreeText += `
                     Polubraća i polusestre po ocu dobijaju <span class="result-number">(${fatherSibs})</span><span class="result-positive"> svako po ${Number(spouseInheritance / fatherSibs).toFixed(1)}% imovine</span><br>`
                 } else if (siblings > 0 && fatherSibs === 0 && motherSibs > 0) {
+                    let momPercentage = parentInheritance / (motherSibs + siblings);
+
+
                     secondDegreeText += `
-                    Djeca od mame dobijaju <span class="result-number">(${motherSibs + siblings})</span><span class="result-positive"> svako po ${Number(spouseInheritance / (motherSibs + siblings)).toFixed(1)}% imovine</span><br>`
+                    Vanbračna djeca od mame dobijaju <span class="result-number">(${motherSibs})</span><span class="result-positive"> svako po ${Number(momPercentage).toFixed(1)}% imovine</span><br>
+                    Zajednička djeca oca i mame<span class="result-number">(${siblings})</span><span class="result-positive"> dobijaju svako po ${Number((parentInheritance / siblings) + (momPercentage)).toFixed(1)}% imovine</span>`
                 } else if (siblings > 0 && fatherSibs > 0 && motherSibs === 0) {
+                    let dadPercentage = parentInheritance / (fatherSibs + siblings);
+
                     secondDegreeText += `
-                    Djeca od oca dobijaju <span class="result-number">(${fatherSibs + siblings})</span><span class="result-positive"> svako po ${Number(spouseInheritance / (fatherSibs + siblings)).toFixed(1)}% imovine</span><br>`
+                    Vanbračna djeca od oca dobijaju <span class="result-number">(${fatherSibs})</span><span class="result-positive"> svako po ${Number(dadPercentage).toFixed(1)}% imovine</span><br>
+                    Zajednička djeca oca i mame<span class="result-number">(${siblings})</span><span class="result-positive"> dobijaju svako po ${Number((parentInheritance / siblings) + (dadPercentage)).toFixed(1)}% imovine</span>`
                 } else if (siblings > 0 && fatherSibs > 0 && motherSibs > 0) {
                     let dadPercentage = parentInheritance / (fatherSibs + siblings);
                     let momPercentage = parentInheritance / (motherSibs + siblings);
@@ -938,10 +1040,6 @@ function secondDegreeResultsWithoutBothParents (secondDegreeText) {
 
     mainTextP.innerHTML = `Imovina se dijeli zakonski u drugom nasljednom redu <hr>`
     mainTextP.innerHTML += secondDegreeText;
-    if (willStatus) {
-        mainTextP.innerHTML += `
-        <hr>Testamentom je podijeljeno <span class="result-positive">${100 - inheritance}% imovine</span><br>`
-    }
     
     optionsDiv.innerHTML = ''
 }
@@ -966,11 +1064,6 @@ function secondDegreeResultsTrio (isSpousePresent, isMotherAlive, isFatherAlive)
         Ukupan broj nasljednika je <span class="result-number">(2)</span><br>
         Imovinu <span class="result-positive">dijele zajednički otac i majka ostavitelja po ${Number(inheritance / 2).toFixed(1)}%</span>`
     } 
-
-    if (willStatus) {
-        mainTextP.innerHTML += `
-        <hr>Testamentom je podijeljeno <span class="result-positive">${100 - inheritance}% imovine</span><br>`
-    }
 
     optionsDiv.innerHTML = '';
 }
@@ -1119,13 +1212,10 @@ function thirdDegreeKidsByDadSide (inheritance,dadGrandparents) {
                     Djeca drugog roditelja sa očeve strane <span class="result-number">(${x})</span><span class="result-positive"> dobijaju po ${Number(dadInheritance / x).toFixed(1)}%</span><br>`
                 } 
             } else {
-                if (grandmaKids > 0 ||grandpaKids > 0 || shared > 0) {
-                    dadInheritance /= 2
-                } 
 
                 if (grandmaKids === 0 && grandpaKids === 0 && shared > 0) {
                     sharedTextDadSide += `
-                    Djeca <span class="result-number">(${shared})</span> od djeda i bake sa očeve strane <span class="result-positive">nasljeđuju po ${Number(inheritance / shared).toFixed(1)}%</span><br>`
+                    Djeca <span class="result-number">(${shared})</span> od djeda i bake sa očeve strane <span class="result-positive">nasljeđuju po ${Number(dadInheritance / shared).toFixed(1)}%</span><br>`
                 } else if (grandpaKids === 0 && shared > 0 && grandmaKids > 0) {
                     let grandpaPercentage = dadInheritance / shared;
                     let grandmaPercentage = dadInheritance / (shared + grandmaKids);
@@ -1318,13 +1408,11 @@ function thirdDegreeKidsByMomSide(inheritance, sharedTextDadSide, momGrandparent
                     Djeca drugog roditelja sa mamine strane <span class="result-number">(${x})</span><span class="result-positive"> dobijaju po ${Number(momInheritance / x).toFixed(1)}%</span><br>`
                 } 
             } else {
-                if (grandmaKids > 0 ||grandpaKids > 0 || shared > 0) {
-                    momInheritance /= 2
-                } 
+    
 
                 if (grandmaKids === 0 && grandpaKids === 0 && shared > 0) {
                     sharedTextMomSide += `
-                    Djeca <span class="result-number">(${shared})</span> od djeda i bake sa mamine strane <span class="result-positive">nasljeđuju po ${Number(inheritance / shared).toFixed(1)}%</span><br>`
+                    Djeca <span class="result-number">(${shared})</span> od djeda i bake sa mamine strane <span class="result-positive">nasljeđuju po ${Number(momInheritance / shared).toFixed(1)}%</span><br>`
                 } else if (grandpaKids === 0 && shared > 0 && grandmaKids > 0) {
                     let grandpaPercentage = momInheritance / shared;
                     let grandmaPercentage = momInheritance / (shared + grandmaKids);
@@ -1398,10 +1486,17 @@ function thirdDegreeRes (sharedTextDadSide, sharedTextMomSide) {
         mainTextP.innerHTML += sharedTextMomSide
     }
 
-    if (willStatus) {
-        mainTextP.innerHTML += `
-        <hr>Testamentom je podijeljeno <span class="result-positive">${100 - inheritance}% imovine</span><br>`
-    }
+    optionsDiv.innerHTML = ''
+}
+
+//^^ Function to resolve fourth degree
+function fourthDegreeRes () {
+    mainDiv.classList.remove("main-div-for-questions")
+    mainDiv.classList.add("main-div-for-questions-result")
+
+    headerH3.textContent = 'Četvrti nasljedni red';
+    mainTextP.innerHTML = `
+    U slučaju da dođe do ovog nasljednog reda, preporučujemo angažiranje advokata. Razlog tome je što je potrebna potraga za pradjedovima i prabakama koji bi mogli biti nasljednici. Ukoliko se ne pronađu ova lica, imovina će pripasti državi. Nadležni sud će odlučiti kako se dalje postupa s imovinom`
 
     optionsDiv.innerHTML = ''
 }
