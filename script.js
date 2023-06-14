@@ -716,7 +716,7 @@ function firstDegreeResultsWithUnaAndGrandkids(numberOfKids, unavailableChildren
         <br>
         Dakle, kada isključimo djecu bez potomaka<span class="result-negative">(${numberOfNNKids - numberOfNNKidsWithKids})</span>, ostaju nam djeca koja mogu naslijediti<span class="result-positive">(${numberOfKids - (numberOfNNKids)})</span> i djeca koja ne mogu direktno naslijediti već njihov dio se dijeli njihovoj djeci<span class="result-positive">(${numberOfNNKidsWithKids})</span> <span class="result-neutral">${numberOfKids - numberOfNNKids} + ${numberOfNNKidsWithKids} = ${(numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids}</span>
         <br>
-        Imovina se dijeli preostalim nasljednicima <span class="result-number">(${(numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids})</span>, <span class="result-neutral">jednako po glavi (per capita)</span>. tako da svi <span class="result-positive"> te svako dobija po ${Number(inheritance / ((numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids)).toFixed(1)}% imovine</span><br><br>`
+        Imovina se dijeli preostalim nasljednicima <span class="result-number">(${(numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids})</span>, <span class="result-neutral">jednako po glavi (per capita)</span><span class="result-positive"> te svako dobija po ${Number(inheritance / ((numberOfKids - numberOfNNKids) + numberOfNNKidsWithKids)).toFixed(1)}% imovine</span><br><br>`
     }
 
     optionsDiv.innerHTML = ''

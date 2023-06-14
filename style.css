@@ -412,23 +412,22 @@ footer {
 .tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 3px dotted black;
 }
 
 .tooltip .tooltiptext {
     visibility: hidden;
-    width: 350px;
+    width: 300px;
     background-color: black;
     color: #fff;
     text-align: center;
     padding: 3px;
     border-radius: 5px;
-    position: absolute;
     z-index: 1;
     font-size: small;
-    bottom: -150px;
-    right: 50px;
-    margin-left: -60px;
+    position: absolute;
+    top: 100%; 
+    left: 50%; 
+    transform: translateX(-50%); 
 }
 
 .tooltip:hover .tooltiptext {
@@ -440,7 +439,10 @@ footer {
     color: #fff;
 }
 
-
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
 @media only screen and (max-width: 600px) {
     body {
@@ -456,6 +458,11 @@ footer {
             "header    header"
             "nav       main"
             "footer    footer"
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
     }
 
     .nav-hidden {
@@ -491,7 +498,8 @@ footer {
     .nav-show {
         background-color: whitesmoke;
         grid-area: nav;
-        width: 280px;
+        width: 230px;
+        height: auto;
         border-radius: 10px;
         display: flex;
         flex-direction: column;
@@ -518,13 +526,13 @@ footer {
     }
 
     .main-div-for-questions {
-        width: 320px;
-        height: 520px;
+        width: 280px;
+        height: 480px;
         border-radius: 5px 0 0 5px;
         background-color: whitesmoke;
         box-shadow: 3px 3px black;
         display: grid;
-        grid-template-rows: 8% 65% 27%;
+        grid-template-rows: 5% 68% 27%;
         z-index: 1;
     }
 
@@ -537,8 +545,8 @@ footer {
     }
 
     .main-div-for-questions-result {
-        width: 320px;
-        height: 520px;
+        width: 280px;
+        height: 480px;
         border-radius: 5px;
         background-color: whitesmoke;
         box-shadow: 3px 3px black;
@@ -551,13 +559,13 @@ footer {
         display: flex;
         flex-direction: column;
         gap: 5px;
-        width: 200px;
+        width: 170px;
     }
 
     nav ul li {
         border-radius: 5px;
-        width: 200px;
-        font-size: large;
+        width: 150px;
+        font-size: medium;
         position: relative;
         right: 40px;
         height: 30px;
@@ -577,7 +585,7 @@ footer {
     hr {
         background-color: palevioletred;
         height: 5px;
-        width: 200px;
+        width: 200px
     }
 
     #description-for-li {
@@ -585,6 +593,7 @@ footer {
         height: auto;
         box-shadow: 2px 2px palevioletred;
         display: none;
+        font-size: small;
     }
 
     header {
@@ -697,7 +706,7 @@ footer {
         border-radius: 5px 0 0 5px;
         font-size: x-large;
         position: relative;
-        right: 168px;
+        right: 153px;
     }
     
     #header-for-text {
@@ -706,7 +715,7 @@ footer {
     }
 
     h3 {
-        font-size: x-large;
+        font-size: medium;
     }
 
     .main-text {
@@ -716,8 +725,8 @@ footer {
         align-items: center;
         background-color: whitesmoke;
         display: flex;
-        padding: 20px;
-        font-size: medium;
+        padding: 15px;
+        font-size: smaller;
         justify-content: center;
     }
 
@@ -736,9 +745,10 @@ footer {
         box-shadow: 2px 2px palevioletred;
         position: static;
         bottom: 20px;
-        width: 300px;
-        height: 150px;
+        width: 250px;
+        height: 130px;
         text-align: justify;
+        font-size: smaller;
     }
 
     .multiple-form {
@@ -763,7 +773,7 @@ footer {
         background-color: palevioletred;
         color: white;
         border: none;
-        font-size: large;
+        font-size: medium;
         height: 30px;
         width: 120px;
         border-radius: 5px;
@@ -848,6 +858,7 @@ footer {
         grid-area: footer;
         background-color: whitesmoke;
         text-align: center;
+        font-size: smaller;
     }
 
     .tooltip {
@@ -858,18 +869,18 @@ footer {
 
     .tooltip .tooltiptext {
         visibility: hidden;
-        width: 350px;
+        width: 150px;
         background-color: black;
         color: #fff;
         text-align: center;
         padding: 3px;
         border-radius: 5px;
-        position: absolute;
         z-index: 1;
         font-size: small;
-        bottom: -150px;
-        right: 50px;
-        margin-left: -60px;
+        position: absolute;
+        top: 100%; 
+        left: 50%; 
+        transform: translateX(-50%)
     }
 
     .tooltip:hover .tooltiptext {
