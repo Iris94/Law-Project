@@ -251,7 +251,7 @@ main {
 }
 
 #header-for-text {
-    position: fixed;
+    position: absolute;
     align-self: center;
 }
 
@@ -710,7 +710,7 @@ a {
     }
     
     #header-for-text {
-        position: fixed;
+        position: absolute;
         align-self: center;
     }
 
